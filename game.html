@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Виселица</title>
+        <style>
+            #word {
+                position: absolute;
+                left: 50%;
+                background-color: #c4c4c4;
+                box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
+            }
+            p {
+               display: inline-block;
+               margin: 5px;
+               font-size: 5em;
+               padding: 10px;
+            }
+            form {
+                position: absolute;
+                bottom: 0px;
+                right: 50px;
+                padding: 20px;
+                background-color: #c4c4c4;
+                border-radius: 10px;
+                box-shadow: 5px 5px 5px; 
+            }
+            form input {
+                background-color: #e5e5e5;
+                border-color: #757575;
+                font-size: 1em;
+                border-radius: 5px;
+            }
+            canvas {
+                margin-left: 40px;
+            }
+        </style>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"> </script>
+    </head>
+    <body>
+        <div id = "word"></div>
+        <canvas id = 'hangman' height = '600' width = '400'></canvas>
+        <form>
+            <input type="text" id="letterInput" placeholder="A">
+            <input type="button" id="button" value="Сделать попытку">
+        </form>
+
+        <script>
+            var name1; 
+            var name2;
+            var word;
+            var answers = []; // массив ответов пользователя c "_"
+            var mistake = 0;
+            var rightl; // логическое значение для проверки буквы
+            var remains;
+            
+            function isMistake(mistake) { 
+               var canvas = document.getElementById("hangman");
+               var ctx = canvas.getContext("2d");
+               switch (mistake) {
+                   case 1:
+                       ctx.beginPath();
+                       ctx.moveTo(200,100);
+                       ctx.lineTo(200,50);
+                       ctx.lineTo(50,50);
+                       ctx.lineTo(50,450);
+                       ctx.lineTo(300,450);
+                       ctx.lineTo(300,400);
+                       ctx.lineTo(50,400);
+                       ctx.stroke();
+                       break;
+                   case 2: 
+                       ctx.beginPath();
+                       ctx.arc(200, 125, 25, 0, Math.PI * 2, true);
+                       ctx.stroke();
+                       break;
+                   case 3:
+                       ctx.beginPath();
+                       ctx.moveTo(200,150);
+                       ctx.lineTo(200,250);
+                       ctx.stroke();
+                       break;
+                   case 4:
+                       ctx.beginPath();
+                       ctx.moveTo(200,190);
+                       ctx.lineTo(155,150);
+                       ctx.stroke();
+                       break;
+                   case 5:
+                       ctx.beginPath();
+                       ctx.moveTo(200,190);
+                       ctx.lineTo(245,150);
+                       ctx.stroke();
+                       break;
+                   case 6:
+                       ctx.beginPath();
+                       ctx.moveTo(200,250);
+                       ctx.lineTo(175,310);
+                       ctx.stroke();
+                       break;
+                   case 7:
+                       ctx.beginPath();
+                       ctx.moveTo(200,250);
+                       ctx.lineTo(225,310);
+                       ctx.stroke();
+                       break;
+                   default: 
+                       alert(name2 + "Вы проиграли!");
+                       break;   
+                }
+            }
+               
+            window.onload = function() { 
+                name1 = prompt('Игрок 1, введите Ваше имя', '');
+                name2 = prompt('Игрок 2, введите Ваше имя', '');
+                word = prompt(name1 +', введите слово', '');
+                
+                if (word === '') {
+                    alert ("Введите слово!");
+                }
+                remains = word.length;
+                
+                // цикл выводит "_" 
+                for (i=0;i<=word.length-1;i++) {
+                    answers[i] = "_";
+                    var parent = document.getElementById('word');
+                    var underscores = document.createElement('p');
+                    underscores.innerHTML = '_';
+                    parent.appendChild(underscores);
+                }
+            }
+               
+            button.onclick = function () {
+                var letterInput = document.getElementById('letterInput');
+                var guess = letterInput.value;
+    
+                // проверка введенного значения
+                if (guess === null || guess.length !== 1) {
+                    alert("Пожалуйста, введите букву");
+                } 
+                letterInput.value = "";
+                
+                // проверка наличия буквы в загаданном слове
+                function checkGuess() {
+                    if (word.indexOf(guess)>-1) {
+                      rightl = true;  
+                    } else if (word.indexOf(guess) == -1) {
+                        rightl = false;
+                    }
+                    return rightl;
+                }
+                checkGuess();
+                
+                if (rightl == true) {
+                    for (var i=0; i<=word.length-1; i++) {
+                        if (word[i] == guess) {
+                            answers[i] = guess;
+                            var parent = document.getElementById('word');
+                            $("#word").empty();
+                            var newWord = document.createElement('p');
+                            newWord.innerHTML = answers.join(' ');
+                            parent.appendChild(newWord);
+                            remains--;
+                        }
+                    }
+                } else {
+                    mistake++;
+                    isMistake(mistake);
+                }
+                
+                // проверка окончания игры
+                if (remains == 0) {
+                    alert("Поздравляю, " + name2 + " " + "Вы победили!");
+                    var restart = confirm("Хотите начать игру заново?");
+                    if (restart) {
+                        window.location.reload();
+                    } else {
+                        window.close(); 
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
