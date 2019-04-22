@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
     <head>
+        <meta charset = "utf-8">
         <title>Виселица</title>
         <style>
             #word {
@@ -155,7 +156,6 @@
                         if (word[i] == guess) {
                             answers[i] = guess;
                             var parent = document.getElementById('word');
-                            $("#word").empty();
                             var newWord = document.createElement('p');
                             newWord.innerHTML = answers.join(' ');
                             parent.appendChild(newWord);
